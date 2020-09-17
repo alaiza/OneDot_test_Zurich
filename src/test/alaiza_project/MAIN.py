@@ -5,6 +5,14 @@ import src.test.alaiza_project.manager as manager
 import time
 import time
 from datetime import datetime
+from pyspark import SparkContext
+from pyspark.sql import SparkSession
+from src.test.alaiza_project.preprocess import Preprocess
+from src.test.alaiza_project.normalize import Normalize
+from src.test.alaiza_project.extract import Extract
+from src.test.alaiza_project.integrate import Integrate
+from src.test.alaiza_project.enrich import Enrich
+import socket
 
 import sys
 
@@ -12,42 +20,40 @@ import sys
 def main_zurich(arguments, logger):
     try:
 
-        ##########CONFIG
-        config = load_config('configuration/config_properties.yaml')
-        mysql_host = config.get('DATABASE_host')
-        mysql_port = config.get('DATABASE_port')
-        mysql_db = config.get('DATABASE_db')
-        mysql_user = config.get('DATABASE_user')
-        mysql_passw = config.get('DATABASE_pass')
+        start_time = time.time()
 
         ##########PARAMETERIZED
-        costtype = arguments.get('costtype')
-        tocsv = arguments.get('tocsv')
+        step = arguments.get('step')
+        nameinputfile = arguments.get('file')
 
 
-        ##########CONNECTIONS
-        dbservice = DBService(mysql_host,mysql_port,mysql_user,mysql_passw,mysql_db)
+        ##########CONFIG_SPARKSESSION
+        #thriftname = 'thrift://' + socket.gethostname() + ':9083'
+        #SparkContext.setSystemProperty('hive.metastore.uris', thriftname)
+        #sparkSession = (
+            #SparkSession.builder.appName('pyspark-Zurich_Test').enableHiveSupport().getOrCreate())
 
-        start_time = time.time()
-        now = datetime.now()
-        dtnow_string = now.strftime("%Y%m%d_%H%M%S")
-        if costtype == 'fixed':
-            logger.info('executing fixed costs process...')
-            df = dbservice.executeFixedCost()
-            logger.info('fixed costs process DONE')
-        elif costtype == 'startbased':
-            logger.info('executing costs based on start date process...')
-            df = dbservice.executeStartBasedCost()
-            logger.info('costs based on start date DONE')
-        else:
-            logger.critical('input method not rcognized...exiting')
-            sys.exit(1)
+        spark = SparkSession.builder.appName('pyspark-Zurich_Test').getOrCreate()
+        df = manager.getdfFile(spark,nameinputfile)
 
-        if tocsv == 'yes':
-            manager.exportToCSV(df,costtype,dtnow_string)
+        ##########START_EXECUTION
+        counter_step_to_execute = 1
 
-        else:
-            logger.info('Data is not going to be exported')
+        if counter_step_to_execute <= step:
+            Preprocess(spark,df)
+            counter_step_to_execute = counter_step_to_execute + 1
+        if counter_step_to_execute <= step:
+            Normalize(sparkSession)
+            counter_step_to_execute = counter_step_to_execute + 1
+        if counter_step_to_execute <= step:
+            Extract(sparkSession)
+            counter_step_to_execute = counter_step_to_execute + 1
+        if counter_step_to_execute <= step:
+            Integrate(sparkSession)
+            counter_step_to_execute = counter_step_to_execute + 1
+        if counter_step_to_execute <= step:
+            Enrich(sparkSession)
+
     except:
         logger.critical("something went really bad")
     finally:

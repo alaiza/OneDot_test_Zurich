@@ -11,8 +11,18 @@ sys.path.insert(0, 'src.zip')
 
 def build_argument_parser():
     parser = argparse.ArgumentParser(description='Test_berlin_project_parser')
-    parser.add_argument("--costtype", required=False, type=str, default='1',choices=['fixed','startbased'], help="type of cost calculation desired")
-    parser.add_argument("--tocsv", required=False, type=str, default='yes',choices=['yes','no'], help="this option will export to a cvs file with the solution")
+    parser.add_argument("--step", required=True, type=int, default=1,choices=[1,2,3,4],
+                        help="""this is the selector of steps to execute, you can select 1,2,3,4 or 5 
+                        having the following:
+                                    1- preprocess
+                                    2- Normalize
+                                    3- Extract
+                                    4- Integrate
+                                    5- Enrich
+                        **Notice that if you select one number, all the lower choice will be executed previously 
+                        """)
+    parser.add_argument("--file", required=True, type=str,
+                        help="""Name of the file on input folder (extension included)""")
     return parser
 
 

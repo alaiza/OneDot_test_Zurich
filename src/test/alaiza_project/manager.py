@@ -2,10 +2,23 @@ import logging
 import pandas as pd
 import subprocess
 import csv
+import os
 import time
 
 
 _logger = logging.getLogger(__name__)
+
+
+
+def getdfFile(spark,nameinputfile):
+    try:
+        if os.path.isfile("""./intput/{0}""".format(nameinputfile)):
+            df = spark.read.json("""./intput/{0}""".format(nameinputfile))
+            return df
+        else:
+            raise Exception
+    except:
+        _logger.critical('Something didnt worked as expected while reading file')
 
 
 
