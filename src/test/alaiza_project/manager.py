@@ -12,11 +12,8 @@ _logger = logging.getLogger(__name__)
 
 def getdfFile(spark,nameinputfile):
     try:
-        if os.path.isfile("""./intput/{0}""".format(nameinputfile)):
-            df = spark.read.json("""./intput/{0}""".format(nameinputfile))
-            return df
-        else:
-            raise Exception
+        df = spark.read.json(nameinputfile)
+        return df
     except:
         _logger.critical('Something didnt worked as expected while reading file')
 

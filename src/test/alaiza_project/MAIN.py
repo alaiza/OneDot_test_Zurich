@@ -24,7 +24,9 @@ def main_zurich(arguments, logger):
 
         ##########PARAMETERIZED
         step = arguments.get('step')
+        step = 5
         nameinputfile = arguments.get('file')
+        nameinputfile= 'gs://cic-havas-de/logs/data_preparation/supplier_car.json'
 
 
         ##########CONFIG_SPARKSESSION
@@ -40,13 +42,16 @@ def main_zurich(arguments, logger):
         counter_step_to_execute = 1
 
         if counter_step_to_execute <= step:
-            Preprocess(spark,df)
+            preprocess = Preprocess(spark,df)
+            df_modified = preprocess.run()
             counter_step_to_execute = counter_step_to_execute + 1
         if counter_step_to_execute <= step:
-            Normalize(sparkSession)
+            normalize = Normalize(spark,df_modified)
+            df_modified = normalize.run()
             counter_step_to_execute = counter_step_to_execute + 1
         if counter_step_to_execute <= step:
-            Extract(sparkSession)
+            extract = Extract(spark,df_modified)
+            df_modified = extract.run()
             counter_step_to_execute = counter_step_to_execute + 1
         if counter_step_to_execute <= step:
             Integrate(sparkSession)
