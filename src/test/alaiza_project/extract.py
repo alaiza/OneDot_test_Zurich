@@ -1,8 +1,4 @@
 import logging
-import mysql.connector
-
-from sqlalchemy import create_engine
-
 
 _logger = logging.getLogger(__name__)
 
@@ -13,6 +9,15 @@ class Extract:
         self.__preprocesseddataframe = preprocesseddataframe
 
     def run(self):
-        _logger.info('here Ill run all the logic')
-        return 'done'
+        self.__preprocesseddataframe.registerTempTable("supplier_car_normalized")
+        df_extracted = self.__Sparksession.sql(
+            """
+            select 
+            *, 
+            split(ConsumptionTotalText,' ')[0] as `extracted-value-ConsumptionTotalText`,
+            split(ConsumptionTotalText,' ')[1] as `extracted-unit-ConsumptionTotalText` 
+            from supplier_car_normalized
+            """
+        )
+        return df_extracted
 

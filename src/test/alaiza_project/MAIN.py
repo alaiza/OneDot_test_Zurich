@@ -1,20 +1,14 @@
 from timeit import default_timer as timer
-from src.test.alaiza_project.database_service import DBService
 import yaml
 import src.test.alaiza_project.manager as manager
 import time
-import time
-from datetime import datetime
-from pyspark import SparkContext
 from pyspark.sql import SparkSession
 from src.test.alaiza_project.preprocess import Preprocess
 from src.test.alaiza_project.normalize import Normalize
 from src.test.alaiza_project.extract import Extract
 from src.test.alaiza_project.integrate import Integrate
 from src.test.alaiza_project.enrich import Enrich
-import socket
 
-import sys
 
 
 def main_zurich(arguments, logger):
@@ -26,7 +20,7 @@ def main_zurich(arguments, logger):
         step = arguments.get('step')
         step = 5
         nameinputfile = arguments.get('file')
-        nameinputfile= 'gs://cic-havas-de/logs/data_preparation/supplier_car.json'
+        nameinputfile= 'gs://crypto-alaiza-project/manual_file_onedot/supplier_car.json'
 
 
         ##########CONFIG_SPARKSESSION
@@ -54,10 +48,16 @@ def main_zurich(arguments, logger):
             df_modified = extract.run()
             counter_step_to_execute = counter_step_to_execute + 1
         if counter_step_to_execute <= step:
-            Integrate(sparkSession)
+            integrate = Integrate(spark,df_modified)
+            df_modified = integrate.run()
             counter_step_to_execute = counter_step_to_execute + 1
         if counter_step_to_execute <= step:
-            Enrich(sparkSession)
+            enrich = Enrich(spark,df_modified)
+            df_modified = enrich.run()
+        #### Export the solution
+
+        manager.exportToExcel(df_modified, step-1)
+
 
     except:
         logger.critical("something went really bad")

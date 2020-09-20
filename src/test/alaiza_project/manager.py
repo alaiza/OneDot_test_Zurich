@@ -1,5 +1,5 @@
 import logging
-import pandas as pd
+import pandas
 import subprocess
 import csv
 import os
@@ -17,6 +17,24 @@ def getdfFile(spark,nameinputfile):
     except:
         _logger.critical('Something didnt worked as expected while reading file')
 
+
+def exportToExcel(df, step):
+    try:
+        if step == 1:
+            text = 'preprocess'
+        elif step == 2:
+            text = 'normalize'
+        elif step == 3:
+            text = 'extract'
+        elif step == 4:
+            text = 'integrate'
+        elif step == 5:
+            text = 'enrich'
+        else:
+            text = 'unknown'
+        df.toPandas().to_excel('{0}-target_data_custom.xls'.format(text), sheet_name = 'Sheet1', index = False)
+    except:
+        _logger.critical('Something didnt worked as expected while reading file')
 
 
 def exportToCSV(rows,costtype,dtnow_string):

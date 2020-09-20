@@ -15,7 +15,7 @@ class Normalize:
         _logger.info('auxiliar dimensional table for color')
         df_color_aux = self.__Sparksession.createDataFrame(
             [
-                ('bordeaux', 'red'),  # create your data here, be consistent in the types.
+                ('bordeaux', 'red'),
                 ('grün', 'grey'),
                 ('schwarz', 'black'),
                 ('grau', 'grey'),
@@ -28,13 +28,13 @@ class Normalize:
                 ('rot', 'red'),
                 ('mehrfarbig', 'multicolored')
             ],
-            ['rawcolor', 'englishcolor']  # add your columns label here
+            ['rawcolor', 'englishcolor']
         )
         df_color_aux.registerTempTable("color_aux_dimension")
 
         df_brand_aux = self.__Sparksession.createDataFrame(
             [
-                ('LAMBORGHINI', 'Lamborghini'),  # create your data here, be consistent in the types.
+                ('LAMBORGHINI', 'Lamborghini'),
                 ('PORSCHE', 'Porsche'),
                 ('HYUNDAI', 'Hyundai'),
                 ('NSU', 'NSU'),
@@ -55,7 +55,7 @@ class Normalize:
                 ('FERRARI', 'Ferrari'),
                 ('MINI', 'Mini')
             ],
-            ['rawmake', 'brand']  # add your columns label here
+            ['rawmake', 'brand']
         )
         df_brand_aux.registerTempTable("brand_aux_dimension")
 
