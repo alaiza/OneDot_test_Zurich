@@ -1,9 +1,6 @@
 import logging
-import pandas
 import subprocess
 import csv
-import os
-import time
 
 
 _logger = logging.getLogger(__name__)

@@ -1,5 +1,4 @@
 import logging
-import mysql.connector
 from pyspark.sql.functions import first
 
 

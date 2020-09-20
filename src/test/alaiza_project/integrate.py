@@ -1,7 +1,5 @@
 import logging
-import mysql.connector
 
-from sqlalchemy import create_engine
 
 
 _logger = logging.getLogger(__name__)

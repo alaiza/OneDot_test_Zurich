@@ -1,4 +1,3 @@
-from timeit import default_timer as timer
 import yaml
 import src.test.alaiza_project.manager as manager
 import time
