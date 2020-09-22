@@ -16,7 +16,7 @@ def main_zurich(arguments, logger):
         start_time = time.time()
 
         ##########PARAMETERIZED
-        step = arguments.get('step')
+        step = int(arguments.get('step'))
         step = 5
         nameinputfile = arguments.get('file')
         nameinputfile= 'gs://crypto-alaiza-project/manual_file_onedot/supplier_car.json'
