@@ -17,16 +17,10 @@ def main_zurich(arguments, logger):
 
         ##########PARAMETERIZED
         step = int(arguments.get('step'))
-        step = 5
+        #step = 5
         nameinputfile = arguments.get('file')
-        nameinputfile= 'gs://crypto-alaiza-project/manual_file_onedot/supplier_car.json'
+        #nameinputfile= 'gs://crypto-alaiza-project/manual_file_onedot/supplier_car.json'
 
-
-        ##########CONFIG_SPARKSESSION
-        #thriftname = 'thrift://' + socket.gethostname() + ':9083'
-        #SparkContext.setSystemProperty('hive.metastore.uris', thriftname)
-        #sparkSession = (
-            #SparkSession.builder.appName('pyspark-Zurich_Test').enableHiveSupport().getOrCreate())
 
         spark = SparkSession.builder.appName('pyspark-Zurich_Test').getOrCreate()
         df = manager.getdfFile(spark,nameinputfile)
